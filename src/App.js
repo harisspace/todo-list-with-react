@@ -1,26 +1,77 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {Component} from 'react';
+import './index.css';
+// importing components
+import Form from './components/Form';
+import TodoList from './components/TodoList';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+class App extends Component {
+  state = {
+    todos : [],
+  }
+
+  addTodos = (todo) => {
+    todo.id = Math.random() * 1000;
+    const todos = [...this.state.todos, todo];
+    this.setState({
+      todos
+    })
+  }
+
+  completeTodo = (id) => {
+    const todos = this.state.todos.map(todo => {
+      if (todo.id === id) {
+        if (todo.completed === false) {
+          todo.completed = true;
+          return todo;
+        }
+        if (todo.completed === true) {
+          todo.completed = false;
+          return todo;
+        }
+      }
+      return todo;
+      
+    });
+    this.setState({
+      todos
+    })
+  }
+
+  deleteTodo = (id) => {
+    const todos = this.state.todos.filter(todo => {
+      return(
+        todo.id !== id
+      )
+    })
+    this.setState({
+      todos
+    })
+  }
+
+  showStatus = (status) => {
+    const todos = this.state.todos.filter(todo => {
+      switch(status) {
+        case("true") : return (todo.completed);
+        case("false") : return (!todo.completed);
+        default : return todo;
+      }
+    })
+    this.setState({
+      todos
+    })
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <h1 className="is-white">My ToDo List</h1>
+        <Form addTodos={this.addTodos} showStatus={this.showStatus}/>
+        <TodoList todos={this.state.todos} deleteTodo={this.deleteTodo} completeTodo={this.completeTodo}/>
+      </div>
+    )
+  }
+
 }
 
-export default App;
+export default App
